@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/BacklogBotApp/BacklogBotApp.csproj" />
+  <Project Path="tests/BacklogBotApp.Tests/BacklogBotApp.Tests.csproj" />
+</Solution>

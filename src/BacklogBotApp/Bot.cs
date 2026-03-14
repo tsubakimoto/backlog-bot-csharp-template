@@ -10,7 +10,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace LineBotApp;
+namespace BacklogBotApp;
 
 public class Bot
 {

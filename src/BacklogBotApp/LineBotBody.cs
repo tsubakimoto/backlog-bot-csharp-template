@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LineBotApp;
+namespace BacklogBotApp;
 
 public class LineMessageReceiveJson
 {

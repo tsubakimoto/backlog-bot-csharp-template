@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LineBotApp\LineBotApp.csproj" />
+    <ProjectReference Include="..\..\src\BacklogBotApp\BacklogBotApp.csproj" />
   </ItemGroup>
 
 </Project>
