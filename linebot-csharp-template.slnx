@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/LineBotApp/LineBotApp.csproj" />
+  <Project Path="tests/LineBotApp.Tests/LineBotApp.Tests.csproj" />
+</Solution>
