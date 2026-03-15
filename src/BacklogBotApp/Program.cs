@@ -12,16 +12,12 @@ builder.ConfigureFunctionsWebApplication();
 //    .AddApplicationInsightsTelemetryWorkerService()
 //    .ConfigureFunctionsApplicationInsights();
 
-// LINE Messaging API
-builder.Services.AddHttpClient("LineMessagingApi", client =>
+// Backlog API
+builder.Services.AddHttpClient("BacklogApi", client =>
 {
-    client.BaseAddress = new Uri("https://api.line.me/");
-    client.DefaultRequestHeaders.Accept.Add(new("application/json"));
-});
-builder.Services.AddHttpClient("LineContentApi", client =>
-{
-    client.BaseAddress = new Uri("https://api-data.line.me/");
-    client.DefaultRequestHeaders.Accept.Add(new("application/json"));
+    var spaceId = builder.Configuration["Backlog:SpaceId"];
+    client.BaseAddress = new Uri($"https://{spaceId}.backlog.com");
+    client.DefaultRequestHeaders.Accept.Add(new("application/x-www-form-urlencoded"));
 });
 
 builder.Services.AddDistributedMemoryCache();

@@ -1,6 +1,6 @@
-{
+﻿{
   "profiles": {
-    "LineBotApp": {
+    "BacklogBotApp": {
       "commandName": "Project",
       "commandLineArgs": "--port 7173",
       "launchBrowser": false
