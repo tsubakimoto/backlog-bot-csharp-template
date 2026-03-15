@@ -1,42 +1,69 @@
-﻿namespace BacklogBotApp;
+﻿using System.Text.Json.Serialization;
+
+namespace BacklogBotApp;
 
 public class BacklogBody
 {
-    public int id { get; set; }
-    public Project project { get; set; }
-    public BacklogBodyType type { get; set; }
-    public object[] notifications { get; set; }
-    public Createduser createdUser { get; set; }
-    public DateTime created { get; set; }
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+    [JsonPropertyName("project")]
+    public ProjectObject Project { get; set; }
+    [JsonPropertyName("type")]
+    public BacklogBodyType Type { get; set; }
+    [JsonPropertyName("notifications")]
+    public object[] Notifications { get; set; }
+    [JsonPropertyName("createdUser")]
+    public CreatedUserObject CreatedUser { get; set; }
+    [JsonPropertyName("created")]
+    public DateTime Created { get; set; }
 
-    public class Project
+    public class ProjectObject
     {
-        public int id { get; set; }
-        public string projectKey { get; set; }
-        public string name { get; set; }
-        public bool chartEnabled { get; set; }
-        public bool subtaskingEnabled { get; set; }
-        public bool projectLeaderCanEditProjectLeader { get; set; }
-        public bool useWikiTreeView { get; set; }
-        public string textFormattingRule { get; set; }
-        public bool archived { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("projectKey")]
+        public string ProjectKey { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("chartEnabled")]
+        public bool ChartEnabled { get; set; }
+        [JsonPropertyName("subtaskingEnabled")]
+        public bool SubtaskingEnabled { get; set; }
+        [JsonPropertyName("projectLeaderCanEditProjectLeader")]
+        public bool ProjectLeaderCanEditProjectLeader { get; set; }
+        [JsonPropertyName("useWikiTreeView")]
+        public bool UseWikiTreeView { get; set; }
+        [JsonPropertyName("textFormattingRule")]
+        public string TextFormattingRule { get; set; }
+        [JsonPropertyName("archived")]
+        public bool Archived { get; set; }
     }
 
-    public class Createduser
+    public class CreatedUserObject
     {
-        public int id { get; set; }
-        public object userId { get; set; }
-        public string name { get; set; }
-        public int roleType { get; set; }
-        public string lang { get; set; }
-        public object mailAddress { get; set; }
-        public Nulabaccount nulabAccount { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("userId")]
+        public object UserId { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("roleType")]
+        public int RoleType { get; set; }
+        [JsonPropertyName("lang")]
+        public string Lang { get; set; }
+        [JsonPropertyName("mailAddress")]
+        public object MailAddress { get; set; }
+        [JsonPropertyName("nulabAccount")]
+        public NulabAccountObject NulabAccount { get; set; }
     }
 
-    public class Nulabaccount
+    public class NulabAccountObject
     {
-        public string nulabId { get; set; }
-        public string name { get; set; }
-        public string uniqueId { get; set; }
+        [JsonPropertyName("nulabId")]
+        public string NulabId { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("uniqueId")]
+        public string UniqueId { get; set; }
     }
 }

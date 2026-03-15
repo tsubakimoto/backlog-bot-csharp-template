@@ -1,52 +1,85 @@
-﻿namespace BacklogBotApp;
+﻿using System.Text.Json.Serialization;
+
+namespace BacklogBotApp;
 
 public class BacklogIssueAddedBody : BacklogBody
 {
-    public Content content { get; set; }
+    [JsonPropertyName("content")]
+    public ContentObject Content { get; set; }
 
-    public class Content
+    public class ContentObject
     {
-        public int id { get; set; }
-        public int key_id { get; set; }
-        public string summary { get; set; }
-        public string description { get; set; }
-        public Issuetype issueType { get; set; }
-        public object resolution { get; set; }
-        public Priority priority { get; set; }
-        public Status status { get; set; }
-        public object assignee { get; set; }
-        public object[] category { get; set; }
-        public object[] versions { get; set; }
-        public object[] milestone { get; set; }
-        public object startDate { get; set; }
-        public object dueDate { get; set; }
-        public object estimatedHours { get; set; }
-        public object actualHours { get; set; }
-        public object parentIssueId { get; set; }
-        public object[] customFields { get; set; }
-        public object[] attachments { get; set; }
-        public object[] shared_files { get; set; }
-        public object[] externalFileLinks { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("key_id")]
+        public int KeyId { get; set; }
+        [JsonPropertyName("summary")]
+        public string Summary { get; set; }
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+        [JsonPropertyName("issueType")]
+        public IssueTypeObject IssueType { get; set; }
+        [JsonPropertyName("resolution")]
+        public object Resolution { get; set; }
+        [JsonPropertyName("priority")]
+        public PriorityObject Priority { get; set; }
+        [JsonPropertyName("status")]
+        public StatusObject Status { get; set; }
+        [JsonPropertyName("assignee")]
+        public object Assignee { get; set; }
+        [JsonPropertyName("category")]
+        public object[] Category { get; set; }
+        [JsonPropertyName("versions")]
+        public object[] Versions { get; set; }
+        [JsonPropertyName("milestone")]
+        public object[] Milestone { get; set; }
+        [JsonPropertyName("startDate")]
+        public object StartDate { get; set; }
+        [JsonPropertyName("dueDate")]
+        public object DueDate { get; set; }
+        [JsonPropertyName("estimatedHours")]
+        public object EstimatedHours { get; set; }
+        [JsonPropertyName("actualHours")]
+        public object ActualHours { get; set; }
+        [JsonPropertyName("parentIssueId")]
+        public object ParentIssueId { get; set; }
+        [JsonPropertyName("customFields")]
+        public object[] CustomFields { get; set; }
+        [JsonPropertyName("attachments")]
+        public object[] Attachments { get; set; }
+        [JsonPropertyName("shared_files")]
+        public object[] SharedFiles { get; set; }
+        [JsonPropertyName("externalFileLinks")]
+        public object[] ExternalFileLinks { get; set; }
     }
 
-    public class Issuetype
+    public class IssueTypeObject
     {
-        public int id { get; set; }
-        public int projectId { get; set; }
-        public string name { get; set; }
-        public string color { get; set; }
-        public int displayOrder { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("projectId")]
+        public int ProjectId { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("color")]
+        public string Color { get; set; }
+        [JsonPropertyName("displayOrder")]
+        public int DisplayOrder { get; set; }
     }
 
-    public class Priority
+    public class PriorityObject
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
     }
 
-    public class Status
+    public class StatusObject
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
     }
 }

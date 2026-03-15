@@ -1,8 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,8 +41,8 @@ public class Bot
             return new BadRequestResult();
         }
 
-        logger.LogInformation($"Received event: {json.type} for project {json.project.name} by user {json.createdUser.name} at {json.created}");
-        switch (json.type)
+        logger.LogInformation($"Received event: {json.Type} for project {json.Project.Name} by user {json.CreatedUser.Name} at {json.Created}");
+        switch (json.Type)
         {
             case BacklogBodyType.IssueAdded:
                 return new OkResult();
