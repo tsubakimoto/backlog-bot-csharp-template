@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BacklogBotApp;
+namespace BacklogBotApp.Models;
 
 public class BacklogIssueAddedBody : BacklogBody
 {

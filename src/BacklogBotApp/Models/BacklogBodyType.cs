@@ -1,4 +1,4 @@
-﻿namespace BacklogBotApp;
+﻿namespace BacklogBotApp.Models;
 
 public enum BacklogBodyType
 {

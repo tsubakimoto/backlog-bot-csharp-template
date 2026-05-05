@@ -1,12 +1,13 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-using BacklogBotApp;
+using BacklogBotApp.Models;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Moq;
 
 namespace BacklogBotApp.Tests;
