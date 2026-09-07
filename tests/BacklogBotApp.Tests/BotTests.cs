@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-using Moq;
+using NSubstitute;
 
 namespace BacklogBotApp.Tests;
 
@@ -18,14 +18,14 @@ public class BotTests
     public void Constructor_WithValidConfiguration_InitializesBot()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns("test-api-key");
+        configurationMock["Backlog:ApiKey"].Returns("test-api-key");
 
         // Act
-        var bot = new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object);
+        var bot = new Bot(loggerMock, configurationMock, httpClientFactoryMock);
 
         // Assert
         Assert.NotNull(bot);
@@ -35,15 +35,15 @@ public class BotTests
     public void Constructor_WithNullApiKey_ThrowsArgumentNullException()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns((string?)null);
+        configurationMock["Backlog:ApiKey"].Returns((string?)null);
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() =>
-            new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object));
+            new Bot(loggerMock, configurationMock, httpClientFactoryMock));
         Assert.Equal("Backlog:ApiKey", exception.ParamName);
     }
 
@@ -65,13 +65,13 @@ public class BotTests
     public async Task Run_WithNullJson_LogsError()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns("test-api-key");
+        configurationMock["Backlog:ApiKey"].Returns("test-api-key");
 
-        var bot = new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object);
+        var bot = new Bot(loggerMock, configurationMock, httpClientFactoryMock);
         var httpRequest = CreateHttpRequest("null");
 
         // Act
@@ -79,14 +79,10 @@ public class BotTests
 
         // Assert
         Assert.IsType<BadRequestResult>(result);
-        loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Failed to deserialize request body")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+            call.GetMethodInfo().Name == nameof(ILogger.Log) &&
+            call.GetArguments()[0] is LogLevel.Error &&
+            call.GetArguments()[2]?.ToString()!.Contains("Failed to deserialize request body") == true));
     }
 
     [Fact(Skip = "ProductionBugSuspected")]
@@ -152,13 +148,13 @@ public class BotTests
     public async Task Run_WithValidMessage_LogsEventInformation()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns("test-api-key");
+        configurationMock["Backlog:ApiKey"].Returns("test-api-key");
 
-        var bot = new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object);
+        var bot = new Bot(loggerMock, configurationMock, httpClientFactoryMock);
         var requestBody = CreateBacklogMessageJson(BacklogBodyType.IssueAdded);
         var httpRequest = CreateHttpRequest(requestBody);
 
@@ -167,27 +163,23 @@ public class BotTests
 
         // Assert
         Assert.IsType<OkResult>(result);
-        loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Information,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Received event")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+            call.GetMethodInfo().Name == nameof(ILogger.Log) &&
+            call.GetArguments()[0] is LogLevel.Information &&
+            call.GetArguments()[2]?.ToString()!.Contains("Received event") == true));
     }
 
     [Fact]
     public async Task Run_WithAnyRequest_LogsDebugRequestBody()
     {
         // Arrange
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns("test-api-key");
+        configurationMock["Backlog:ApiKey"].Returns("test-api-key");
 
-        var bot = new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object);
+        var bot = new Bot(loggerMock, configurationMock, httpClientFactoryMock);
         var requestBody = CreateBacklogMessageJson(BacklogBodyType.IssueAdded);
         var httpRequest = CreateHttpRequest(requestBody);
 
@@ -196,25 +188,21 @@ public class BotTests
 
         // Assert
         Assert.IsType<OkResult>(result);
-        loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Debug,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Request body")),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+            call.GetMethodInfo().Name == nameof(ILogger.Log) &&
+            call.GetArguments()[0] is LogLevel.Debug &&
+            call.GetArguments()[2]?.ToString()!.Contains("Request body") == true));
     }
 
     private static Bot CreateBot()
     {
-        var loggerMock = new Mock<ILogger<Bot>>();
-        var configurationMock = new Mock<IConfiguration>();
-        var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        var loggerMock = Substitute.For<ILogger<Bot>>();
+        var configurationMock = Substitute.For<IConfiguration>();
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
 
-        configurationMock.Setup(c => c["Backlog:ApiKey"]).Returns("test-api-key");
+        configurationMock["Backlog:ApiKey"].Returns("test-api-key");
 
-        return new Bot(loggerMock.Object, configurationMock.Object, httpClientFactoryMock.Object);
+        return new Bot(loggerMock, configurationMock, httpClientFactoryMock);
     }
 
     private static HttpRequest CreateHttpRequest(string body)
