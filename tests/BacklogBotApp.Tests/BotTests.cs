@@ -12,9 +12,10 @@ using NSubstitute;
 
 namespace BacklogBotApp.Tests;
 
-public class BotTests
+[TestClass]
+public sealed class BotTests
 {
-    [Fact]
+    [TestMethod]
     public void Constructor_WithValidConfiguration_InitializesBot()
     {
         // Arrange
@@ -28,10 +29,10 @@ public class BotTests
         var bot = new Bot(loggerMock, configurationMock, httpClientFactoryMock);
 
         // Assert
-        Assert.NotNull(bot);
+        Assert.IsNotNull(bot);
     }
 
-    [Fact]
+    [TestMethod]
     public void Constructor_WithNullApiKey_ThrowsArgumentNullException()
     {
         // Arrange
@@ -42,12 +43,12 @@ public class BotTests
         configurationMock["Backlog:ApiKey"].Returns((string?)null);
 
         // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() =>
+        var exception = Assert.ThrowsExactly<ArgumentNullException>(() =>
             new Bot(loggerMock, configurationMock, httpClientFactoryMock));
-        Assert.Equal("Backlog:ApiKey", exception.ParamName);
+        Assert.AreEqual("Backlog:ApiKey", exception.ParamName);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithNullJson_ReturnsBadRequest()
     {
         // Arrange
@@ -58,10 +59,10 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<BadRequestResult>(result);
+        Assert.IsInstanceOfType<BadRequestResult>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithNullJson_LogsError()
     {
         // Arrange
@@ -78,14 +79,15 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<BadRequestResult>(result);
-        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+        Assert.IsInstanceOfType<BadRequestResult>(result);
+        Assert.AreEqual(1, loggerMock.ReceivedCalls().Count(call =>
             call.GetMethodInfo().Name == nameof(ILogger.Log) &&
             call.GetArguments()[0] is LogLevel.Error &&
             call.GetArguments()[2]?.ToString()!.Contains("Failed to deserialize request body") == true));
     }
 
-    [Fact(Skip = "ProductionBugSuspected")]
+    [TestMethod]
+    [Ignore("ProductionBugSuspected")]
     public async Task Run_WithEmptyBody_ReturnsBadRequest()
     {
         // Arrange
@@ -96,10 +98,10 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<BadRequestResult>(result);
+        Assert.IsInstanceOfType<BadRequestResult>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithIssueAddedEvent_ReturnsOk()
     {
         // Arrange
@@ -111,10 +113,10 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<OkResult>(result);
+        Assert.IsInstanceOfType<OkResult>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithCommentedEvent_ReturnsOk()
     {
         // Arrange
@@ -126,10 +128,10 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<OkResult>(result);
+        Assert.IsInstanceOfType<OkResult>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithUnknownEventType_ReturnsBadRequest()
     {
         // Arrange
@@ -141,10 +143,10 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<BadRequestResult>(result);
+        Assert.IsInstanceOfType<BadRequestResult>(result);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithValidMessage_LogsEventInformation()
     {
         // Arrange
@@ -162,14 +164,14 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<OkResult>(result);
-        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+        Assert.IsInstanceOfType<OkResult>(result);
+        Assert.AreEqual(1, loggerMock.ReceivedCalls().Count(call =>
             call.GetMethodInfo().Name == nameof(ILogger.Log) &&
             call.GetArguments()[0] is LogLevel.Information &&
             call.GetArguments()[2]?.ToString()!.Contains("Received event") == true));
     }
 
-    [Fact]
+    [TestMethod]
     public async Task Run_WithAnyRequest_LogsDebugRequestBody()
     {
         // Arrange
@@ -187,8 +189,8 @@ public class BotTests
         var result = await bot.Run(httpRequest);
 
         // Assert
-        Assert.IsType<OkResult>(result);
-        Assert.Equal(1, loggerMock.ReceivedCalls().Count(call =>
+        Assert.IsInstanceOfType<OkResult>(result);
+        Assert.AreEqual(1, loggerMock.ReceivedCalls().Count(call =>
             call.GetMethodInfo().Name == nameof(ILogger.Log) &&
             call.GetArguments()[0] is LogLevel.Debug &&
             call.GetArguments()[2]?.ToString()!.Contains("Request body") == true));
